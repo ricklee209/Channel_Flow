@@ -14,9 +14,9 @@
 #define ny Y_out+1    /**** ny+1 ****/
 #define nz Z_out+1    /**** nz+1 ****/
 
-#define deltaXI 0.003272492347489     
+#define deltaXI 0.0003272492347489     
 #define deltaET 0.0078125               /**** 1/ny because already normalized ****/
-#define deltaZT 0.002181661564993 
+#define deltaZT 0.0002181661564993 
 
 #define nxx nx+1
 #define nyy ny+1

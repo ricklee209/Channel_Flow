@@ -28,7 +28,7 @@
 // ---- Limiter ---- //
 // ---- NoLimiter ---- //
 
-#define Limiter 
+#define NoLimiter 
 
 
 
@@ -38,14 +38,5 @@
 // ---- NODT : No dual time stepping ---- //
 
 #define NODT 
-
-
-
-// ---- DT : dual time stepping ---- //
-// ---- NODT : No dual time stepping ---- //
-
-#define NODT 
-
-
 
 

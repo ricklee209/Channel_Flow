@@ -6,6 +6,7 @@
 #include <omp.h>
 #include <math.h>
 #include "Resolution.h"
+#include "Pre_selection.h"
 
 extern int X_np;
 

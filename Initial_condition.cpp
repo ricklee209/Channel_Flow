@@ -109,89 +109,12 @@ double (*J)[Y_m][Z_m] = new double[X_np][Y_m][Z_m]
 				U4q[ii][j][k] = U4out_old[i][j-2][k-2]/J[ii][j][k];
 				U5q[ii][j][k] = U5out_old[i][j-2][k-2]/J[ii][j][k];
 				
-				
-				/*
-				rho = 1.1842;
-				U = 1.72;
-				V = 0;
-				W = 0;    
-				VV = U*U+V*V+W*W;
-				P = 101300;
-				
-				U1[ii][j][k] = rho/J[ii][j][k];
-				U2[ii][j][k] = rho*U/J[ii][j][k];
-				U3[ii][j][k] = rho*V/J[ii][j][k];
-				U4[ii][j][k] = rho*W/J[ii][j][k];
-				U5[ii][j][k] = (P/(K-1)+0.5*rho*VV)/J[ii][j][k];
-				
-				rho = 1.1842;
-				U = 1.72;
-				V = 0;
-				W = 0;    
-				VV = U*U+V*V+W*W;
-				P = 101300;
-				
-				U1q[ii][j][k] = rho/J[ii][j][k];
-				U2q[ii][j][k] = rho*U/J[ii][j][k];
-				U3q[ii][j][k] = rho*V/J[ii][j][k];
-				U4q[ii][j][k] = rho*W/J[ii][j][k];
-				U5q[ii][j][k] = (P/(K-1)+0.5*rho*VV)/J[ii][j][k];
-				*/
-				
-				/*
-				rho = 1.1842;
-				U = U2out[i][j-2][k-2]/rho;
-				V = U3out[i][j-2][k-2]/rho;
-				W = U4out[i][j-2][k-2]/rho;    
-				VV = U*U+V*V+W*W;
-				P = 101300;
-				
-				U1[ii][j][k] = rho/J[ii][j][k];
-				U2[ii][j][k] = rho*U/J[ii][j][k];
-				U3[ii][j][k] = rho*V/J[ii][j][k];
-				U4[ii][j][k] = rho*W/J[ii][j][k];
-				U5[ii][j][k] = (P/(K-1)+0.5*rho*VV)/J[ii][j][k];
-				
-				rho = 1.1842;
-				U = U2out_old[i][j-2][k-2]/rho;
-				V = U3out_old[i][j-2][k-2]/rho;
-				W = U4out_old[i][j-2][k-2]/rho;    
-				VV = U*U+V*V+W*W;
-				P = 101300;
-				
-				U1q[ii][j][k] = rho/J[ii][j][k];
-				U2q[ii][j][k] = rho*U/J[ii][j][k];
-				U3q[ii][j][k] = rho*V/J[ii][j][k];
-				U4q[ii][j][k] = rho*W/J[ii][j][k];
-				U5q[ii][j][k] = (P/(K-1)+0.5*rho*VV)/J[ii][j][k];
-				*/
-				
-				
-				/*
-				U1[ii][j][k] = 1.1842/J[ii][j][k];
-				U2[ii][j][k] = 14/J[ii][j][k];
-				U3[ii][j][k] = 0/J[ii][j][k];
-				U4[ii][j][k] = 0/J[ii][j][k];
-				U5[ii][j][k] = (253250+196/2*1.1842)/J[ii][j][k];
-
-				U1q[ii][j][k] = 1.1842/J[ii][j][k];
-				U2q[ii][j][k] = 14/J[ii][j][k];
-				U3q[ii][j][k] = 0/J[ii][j][k];
-				U4q[ii][j][k] = 0/J[ii][j][k];
-				U5q[ii][j][k] = (253250+196/2*1.1842)/J[ii][j][k];
-				*/
-				
-				//U1[ii][j][k] = U1q[ii][j][k] = 1.1842/J[ii][j][k];
-
-				//if (i == 0 & k == 2) printf("%d\t%2.16f\n",j,U2out[i][j-2][k-2]);
-
 			}
 		}
 		
 		
 	}
 
-	//system("pause");
 
 	delete [] U1out;
 	delete [] U2out;
