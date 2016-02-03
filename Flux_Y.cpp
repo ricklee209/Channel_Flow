@@ -72,11 +72,9 @@ double (*EpY)[Y_m][Z_m] = new double[X_np][Y_m][Z_m]
 
 	double rho,U,V,W,VV,P,C,T,h,H;
 	double u,v,w;
-	double temp,temp1,temp2,temp3,temp4,temp5;
+	double temp,temp1,temp2,temp3,temp4,temp5,temp6;
+	double deltaU, deltaP, Cdiss;
 	double beta,S,_S_;
-
-	double m11,m12,m13,m14,m15,m22,m23,m24,m25,m33,m34,m35,m44,m45,m55;
-	double thedac1,thedac2,thedac3,thedad1,thedad2,thedad3;
 
 	double xix,xiy,xiz,etx,ety,etz,ztx,zty,ztz;
 	double XIx,XIy,XIz,ETx,ETy,ETz,ZTx,ZTy,ZTz;
@@ -84,9 +82,7 @@ double (*EpY)[Y_m][Z_m] = new double[X_np][Y_m][Z_m]
 	double rho_,u_,v_,w_,U_,V_,W_,U__,V__,W__,VV_,P_,T_,C_,H_;
 	double _U_,_V_,_W_;
 	double dU1,dU2,dU3,dU4,dU5;
-	double tempu1,tempu2,tempv1,tempv2,tempw1,tempw2,tempuvw,temph1,temph2;
-	double d11,d12,d13,d14,d15,d21,d22,d23,d24,d25,d31,d32,d33,d34,d35;
-	double d41,d42,d43,d44,d45,d51,d52,d53,d54,d55, Fav1,Fav2,Fav3,Fav4,Fav5;
+	double Fav1,Fav2,Fav3,Fav4,Fav5;
 
 /**** MUSCL 5th-order ****/
 // ============================================================================ //
@@ -253,37 +249,42 @@ double (*EpY)[Y_m][Z_m] = new double[X_np][Y_m][Z_m]
 			iend = gend[myid]-1;	     		  ////
 //// ============================================ ////
 
-	#pragma omp parallel for private(\
+	/*---Y fluxes---*/
+	for (i = istart; i <= iend; i++) {
+
+		
+#pragma omp parallel for private(\
 	xix,xiy,xiz,etx,ety,etz,ztx,zty,ztz,ETx,ETy,ETz,\
 	_rho,_u,_v,_w,_U,_V,_W,__V,_VV,_P,_T,_C,_H,\
 	rho_,u_,v_,w_,U_,V_,W_,V__,VV_,P_,T_,C_,H_,\
 	rho,u,v,w,U,V,W,_V_,VV,H,C,P,T,\
 	dU1,dU2,dU3,dU4,dU5,\
-	beta,S,_S_,\
-	temp,temp1,temp2,temp3,temp4,temp5,tempu1,tempu2,tempv1,tempv2,tempw1,tempw2,tempuvw,temph1,temph2,\
-	d11,d12,d13,d14,d15,d21,d22,d23,d24,d25,d31,d32,d33,d34,d35,\
-	d41,d42,d43,d44,d45,d51,d52,d53,d54,d55,\
+	beta,S,\
+	temp,temp1,temp2,temp3,temp4,temp5,temp6,\
+	deltaU, deltaP, Cdiss, \
 	Fav1,Fav2,Fav3,Fav4,Fav5,\
-	j,k\
+	k\
 	)
 
-	/*---Y fluxes---*/
-	for (i = istart; i <= iend; i++) {
+
 		for (j = 1; j < nyy; j++) {
 			for (k = 1; k < nz; k++) {
 
-				xix=xidx_v[i][j][k];
-				xiy=xidy_v[i][j][k];
-				xiz=xidz_v[i][j][k];
 				etx=etdx_v[i][j][k];
 				ety=etdy_v[i][j][k];
 				etz=etdz_v[i][j][k];          
-				ztx=ztdx_v[i][j][k];
-				zty=ztdy_v[i][j][k];
-				ztz=ztdz_v[i][j][k];
-				ETx=etx/(sqrt(etx*etx+ety*ety+etz*etz));
+				
 				ETy=ety/(sqrt(etx*etx+ety*ety+etz*etz));
-				ETz=etz/(sqrt(etx*etx+ety*ety+etz*etz));
+
+
+				
+				/* jump dU */
+				dU1 = MR1[i][j][k]-ML1[i][j][k];
+				dU2 = MR2[i][j][k]-ML2[i][j][k];
+				dU3 = MR3[i][j][k]-ML3[i][j][k];
+				dU4 = MR4[i][j][k]-ML4[i][j][k];
+				dU5 = MR5[i][j][k]-ML5[i][j][k];
+
 
 				/* lefr parameter */
 				_rho = ML1[i][j][k];
@@ -291,18 +292,10 @@ double (*EpY)[Y_m][Z_m] = new double[X_np][Y_m][Z_m]
 				_v = ML3[i][j][k]/_rho;
 				_w = ML4[i][j][k]/_rho;
 
-				_U = xix*_u+xiy*_v+xiz*_w;
 				_V = etx*_u+ety*_v+etz*_w;
-
-				_W = ztx*_u+zty*_v+ztz*_w;
-
-
-				__V = ETx*_u+ETy*_v+ETz*_w;
-
 
 				_VV = _u*_u+_v*_v+_w*_w;
 				_P = (ML5[i][j][k]-0.5*_rho*_VV)*(K-1);
-				_T = _P/_rho;
 				_C = K*_P/_rho;
 				_H = 0.5*_VV+_C/(K-1);
 
@@ -312,121 +305,133 @@ double (*EpY)[Y_m][Z_m] = new double[X_np][Y_m][Z_m]
 				v_ = MR3[i][j][k]/rho_;
 				w_ = MR4[i][j][k]/rho_;
 
-				U_ = xix*u_+xiy*v_+xiz*w_;
 				V_ = etx*u_+ety*v_+etz*w_;
-				W_ = ztx*u_+zty*v_+ztz*w_;
-
-				V__ = ETx*u_+ETy*v_+ETz*w_;
 
 				VV_ = u_*u_+v_*v_+w_*w_;
 				P_ = (MR5[i][j][k]-0.5*rho_*VV_)*(K-1);
-				T_ = P_/rho_;
 				C_ =K*P_/rho_;
 				H_ = 0.5*VV_+C_/(K-1);
 
-				/* flux varibale */
-				rho = 0.5*(_rho+rho_);
-				u = 0.5*(_u+u_);
-				v = 0.5*(_v+v_);
-				w = 0.5*(_w+w_);
 
-				U = 0.5*(_U+U_);
-				V = 0.5*(_V+V_);
-				W = 0.5*(_W+W_); 
+				#if ROE != 2
 
-				_V_ = 0.5*(__V+V__);
+					/* flux varibale */
+					temp5 = sqrt(_rho);
+					temp6 = sqrt(rho_);
+					
+					temp4 = temp5+temp6;
 
-				VV = u*u+v*v+w*w;
-				H = 0.5*(_H+H_);
-				C = (H-0.5*VV)*(K-1);
-				P = rho*C/K;
-				T = P/rho;
+					rho = sqrt(_rho*rho_);
+					u = (temp5*_u+temp6*u_)/temp4;
+					v = (temp5*_v+temp6*v_)/temp4;;
+					w = (temp5*_w+temp6*w_)/temp4;
+
+					U = (temp5*_U+temp6*U_)/temp4;
+					V = (temp5*_V+temp6*V_)/temp4;
+					W = (temp5*_W+temp6*W_)/temp4;
+
+					VV = u*u+v*v+w*w;
+					H = 0.5*(_H+H_);
+					C = (H-0.5*VV)*(K-1); /**** C = sqrt((H-0.5*VV)*(K-1)); ****/
+					P = rho*C/K;
+
+				#endif
 
 
-				/* jump dU */
-				dU1 = P_-_P;
-				dU2 = u_-_u;
-				dU3 = v_-_v;
-				dU4 = w_-_w;
-				dU5 = T_-_T;
+				#if ROE == 1 
 
-				/* preconditioning */
-				beta = max(VV/C,e);
+					S = sqrt(C);
+					temp1 = (P_-_P)/rho/C;
+					temp2 = V/S*(V_-_V);
 
-				/*V=etx*u+ety*v+etz*w;*/
-				//S=sqrt(V*V*(beta-1)+4*beta*C*C*(etx*etx+ety*ety+etz*etz));
-				S=sqrt(V*V*(beta-1)*(beta-1)+4*beta*C*(etx*etx+ety*ety+etz*etz));
-				/*_V_=ETx*u+ETy*v+ETz*w;*/
-				_S_=sqrt(_V_*_V_*(beta-1)*(beta-1)+4*beta*C*(ETx*ETx+ETy*ETy+ETz*ETz));
+					deltaU = (S-fabs(V))*temp1+temp2;
+					deltaP = V/S*(P_-_P)+(S-fabs(V))*rho*(V_-_V);
 
-				temp = 4*K*_S_*T*beta;
-				temp1 = S+V+V*beta;
-				temp2 = -S+V+V*beta;
-				temp3 = _S_-_V_+_V_*beta;
-				temp4 = _S_+_V_-_V_*beta;
-				temp5 = _S_*_S_-(beta-1)*(beta-1)*_V_*_V_;
-				tempu1 = 2*T*ETx*K*beta+u*_S_+u*(beta-1)*_V_;
-				tempu2 = 2*T*ETx*K*beta-u*_S_+u*(beta-1)*_V_;
-				tempv1 = 2*T*ETy*K*beta+v*_S_+v*(beta-1)*_V_;
-				tempv2 = 2*T*ETy*K*beta-v*_S_+v*(beta-1)*_V_;
-				tempw1 = 2*T*ETz*K*beta+w*_S_+w*(beta-1)*_V_;
-				tempw2 = 2*T*ETz*K*beta-w*_S_+w*(beta-1)*_V_;
-				tempuvw = 2*T*K*beta*(u*ETx+v*ETy+w*ETz);
-				temph1 = tempuvw+H*_S_+H*_V_*beta-H*_V_; 
-				temph2 = tempuvw-H*_S_+H*_V_*beta-H*_V_;
+				#elif ROE == 2
 
-				d11 = 1/temp*(4*(K-1)*_S_*beta*fabs(V)+temp3*fabs(temp1)+temp4*fabs(temp2));
-				d12 = -1/(2*temp)*(ETx*rho*(fabs(temp2)-fabs(temp1))*temp5);
-				d13 = -1/(2*temp)*(ETy*rho*(fabs(temp2)-fabs(temp1))*temp5);
-				d14 = -1/(2*temp)*(ETz*rho*(fabs(temp2)-fabs(temp1))*temp5);
-				d15 = -rho*fabs(V)/T;
+					beta = sqrt(max(VV_/C_,_VV/_C));
 
-				d21 = 1/temp*(u*_S_*(4*(K-1)*beta*fabs(V)+fabs(temp2)+fabs(temp1))-(fabs(temp2)-fabs(temp1))*(2*T*ETx*K*beta+u*_V_*(beta-1)));
-				d22 = 1/(2*temp)*(rho*(8*T*K*_S_*beta*(ETy*ETy+ETz*ETz)*fabs(V)+ETx*(temp3*tempu2*fabs(temp2)+temp4*tempu1*fabs(temp1))));
-				d23 = 1/(2*temp)*(rho*ETy*(-8*T*K*_S_*beta*ETx*fabs(V)+temp3*tempu2*fabs(temp2)+temp4*tempu1*fabs(temp1)));
-				d24 = 1/(2*temp)*(rho*ETz*(-8*T*K*_S_*beta*ETx*fabs(V)+temp3*tempu2*fabs(temp2)+temp4*tempu1*fabs(temp1)));
-				d25 = -u*rho*fabs(V)/T;
+					
+					temp1 = 0.5*(_u+u_)+0.5*beta*(_u-u_);
+					temp2 = 0.5*(_v+v_)+0.5*beta*(_v-v_);
+					temp3 = 0.5*(_w+w_)+0.5*beta*(_w-w_);
 
-				d31 = 1/temp*(v*_S_*(4*(K-1)*beta*fabs(V)+fabs(temp2)+fabs(temp1))-(fabs(temp2)-fabs(temp1))*(2*T*ETy*K*beta+v*_V_*(beta-1)));
-				d32 = 1/(2*temp)*(rho*ETx*(-8*T*K*_S_*beta*ETy*fabs(V)+temp3*tempv2*fabs(temp2)+temp4*tempv1*fabs(temp1)));
-				d33 = 1/(2*temp)*(rho*(8*T*K*_S_*beta*(ETx*ETx+ETz*ETz)*fabs(V)+ETy*(temp3*tempv2*fabs(temp2)+temp4*tempv1*fabs(temp1))));
-				d34 = 1/(2*temp)*(rho*ETz*(-8*T*K*_S_*beta*ETy*fabs(V)+temp3*tempv2*fabs(temp2)+temp4*tempv1*fabs(temp1)));
-				d35 = -v*rho*fabs(V)/T;
+					u_ = 0.5*(u_+_u)+0.5*beta*(u_-_u);
+					v_ = 0.5*(v_+_v)+0.5*beta*(v_-_v);
+					w_ = 0.5*(w_+_w)+0.5*beta*(w_-_w);
 
-				d41 = 1/temp*(w*_S_*(4*(K-1)*beta*fabs(V)+fabs(temp2)+fabs(temp1))-(fabs(temp2)-fabs(temp1))*(2*T*ETz*K*beta+w*_V_*(beta-1)));
-				d42 = 1/(2*temp)*(rho*ETx*(-8*T*K*_S_*beta*ETz*fabs(V)+temp3*tempw2*fabs(temp2)+temp4*tempw1*fabs(temp1)));
-				d43 = 1/(2*temp)*(rho*ETy*(-8*T*K*_S_*beta*ETz*fabs(V)+temp3*tempw2*fabs(temp2)+temp4*tempw1*fabs(temp1)));
-				d44 = 1/(2*temp)*(rho*(8*T*K*_S_*beta*(ETx*ETx+ETy*ETy)*fabs(V)+ETz*(temp3*tempw2*fabs(temp2)+temp4*tempw1*fabs(temp1))));
-				d45 = -w*rho*fabs(V)/T;
+					_u = temp1;
+					_v = temp2;
+					_w = temp3;
 
-				d51 = 1/temp*(_S_*(4*beta*(H*K-H-T*K)*fabs(V)+H*(fabs(temp2)+fabs(temp1)))-(fabs(temp2)-fabs(temp1))*(tempuvw+H*_V_*beta-H*_V_));
-				d52 = 1/(2*temp)*(rho*(8*T*K*_S_*beta*(-v*ETx*ETy-w*ETx*ETz+u*(ETy*ETy+ETz*ETz)*fabs(V))+ETx*(temph2*temp3*fabs(temp2)+temph1*temp4*fabs(temp1))));
-				d53 = 1/(2*temp)*(rho*(8*T*K*_S_*beta*(-u*ETx*ETy-w*ETy*ETz+v*(ETx*ETx+ETz*ETz)*fabs(V))+ETy*(temph2*temp3*fabs(temp2)+temph1*temp4*fabs(temp1))));
-				d54 = 1/(2*temp)*(rho*(8*T*K*_S_*beta*(-u*ETx*ETz-v*ETy*ETz+w*(ETx*ETx+ETy*ETy)*fabs(V))+ETz*(temph2*temp3*fabs(temp2)+temph1*temp4*fabs(temp1))));
-				d55 = (-H/T+K/(K-1))*rho*fabs(V);
+					temp1 = 0.5*(_V+V_)+0.5*beta*(_V-V_);
+					V_ = 0.5*(V_+_V)+0.5*beta*(V_-_V);
+					_V = temp1;
+
+
+
+					temp5 = sqrt(_rho);
+					temp6 = sqrt(rho_);
+					
+					temp4 = temp5+temp6;
+
+					rho = sqrt(_rho*rho_);
+					u = (temp5*_u+temp6*u_)/temp4;
+					v = (temp5*_v+temp6*v_)/temp4;;
+					w = (temp5*_w+temp6*w_)/temp4;
+
+					V = (temp5*_V+temp6*V_)/temp4;
+
+					VV = u*u+v*v+w*w;
+					H = 0.5*(_H+H_);
+					C = (H-0.5*VV)*(K-1); /**** C = sqrt((H-0.5*VV)*(K-1)); ****/
+					P = rho*C/K;
+
+
+					S = sqrt(C);
+					temp1 = (P_-_P)/rho/C;
+					temp2 = V/S*(V_-_V);
+
+					deltaU = (S-fabs(V))*temp1+temp2;
+					deltaP = V/S*(P_-_P)+(S-fabs(V))*rho*(V_-_V);
+
+
+				#elif ROE == 3
+
+					S = sqrt(C);
+					beta = (fabs(U)+fabs(V)+fabs(W))/S;
+
+					temp1 = (P_-_P)/rho/C;
+					temp2 = V/S*beta*(V_-_V);
+
+					deltaU = (S-fabs(V))*temp1+temp2;
+					deltaP = V/S*(P_-_P)+(beta*S-fabs(V))*rho*(V_-_V);
+
+				#endif
+
 
 				/* artificial viscosity */
-				Fav1 = d11*dU1+d12*dU2+d13*dU3+d14*dU4+d15*dU5;
-				Fav2 = d21*dU1+d22*dU2+d23*dU3+d24*dU4+d25*dU5;
-				Fav3 = d31*dU1+d32*dU2+d33*dU3+d34*dU4+d35*dU5;
-				Fav4 = d41*dU1+d42*dU2+d43*dU3+d44*dU4+d45*dU5;
-				Fav5 = d51*dU1+d52*dU2+d53*dU3+d54*dU4+d55*dU5;
-
+				Fav1 = fabs(V)*dU1+deltaU*rho;
+				Fav2 = fabs(V)*dU2+deltaU*rho*U+deltaP*etx;
+				Fav3 = fabs(V)*dU3+deltaU*rho*V+deltaP*ety;
+				Fav4 = fabs(V)*dU4+deltaU*rho*W+deltaP*etz;
+				Fav5 = fabs(V)*dU5+deltaU*rho*H+deltaP*V;
+					
 				/* inviscid fluxes */
 				
-				//EpY[i][j][k] = 0.05;
-				
-				inFy1[i][j][k] = 0.5*((_rho*_V+rho_*V_)-EpY[i][j][k]*Fav1)/J_v[i][j][k];
-				inFy2[i][j][k] = 0.5*((_rho*_u*_V+rho_*u_*V_+etx*(_P+P_))-EpY[i][j][k]*Fav2)/J_v[i][j][k];
-				inFy3[i][j][k] = 0.5*((_rho*_v*_V+rho_*v_*V_+ety*(_P+P_))-EpY[i][j][k]*Fav3)/J_v[i][j][k];
-				inFy4[i][j][k] = 0.5*((_rho*_w*_V+rho_*w_*V_+etz*(_P+P_))-EpY[i][j][k]*Fav4)/J_v[i][j][k];
-				inFy5[i][j][k] = 0.5*((_V*(3.5*_P+0.5*_rho*_VV)+V_*(3.5*P_+0.5*rho_*VV_))-EpY[i][j][k]*Fav5)/J_v[i][j][k];
+				temp = sqrt(etx*etx+ety*ety+etz*etz);
+
+				inFy1[i][j][k] = 0.5*((_rho*_V+rho_*V_)-Fav1*temp)/J_v[i][j][k];
+				inFy2[i][j][k] = 0.5*((_rho*_u*_V+rho_*u_*V_+etx*(_P+P_))-Fav2*temp)/J_v[i][j][k];
+				inFy3[i][j][k] = 0.5*((_rho*_v*_V+rho_*v_*V_+ety*(_P+P_))-Fav3*temp)/J_v[i][j][k];
+				inFy4[i][j][k] = 0.5*((_rho*_w*_V+rho_*w_*V_+etz*(_P+P_))-Fav4*temp)/J_v[i][j][k];
+				inFy5[i][j][k] = 0.5*((_V*(3.5*_P+0.5*_rho*_VV)+V_*(3.5*P_+0.5*rho_*VV_))-Fav5*temp)/J_v[i][j][k];
 				
 				if (j==1 | j==ny) {
 
 					inFy1[i][j][k] = 0;
 					inFy2[i][j][k] = 0;
-					inFy3[i][j][k] = 0.5*(ety*(_P+P_)-EpY[i][j][k]*Fav3)/J_v[i][j][k];
+					inFy3[i][j][k] = 0.5*(ety*(_P+P_)-Fav3*temp)/J_v[i][j][k];
 					inFy4[i][j][k] = 0;
 					inFy5[i][j][k] = 0;
 

@@ -215,6 +215,10 @@ double (*NL5)[Y_m][Z_m] = new double[X_np][Y_m][Z_m]
 		iend = gend[myid]+1;					  ////
 //// ============================================ ////
 		
+		for (i = istart; i <= iend; i++) {
+
+
+			
 #pragma omp parallel for private(\
 	xix,xiy,xiz,etx,ety,etz,ztx,zty,ztz,\
 	a1,a2,a3,a4,a5,a6,a7,b1,b2,b3,b4,b5,b6,b7,c1,c2,c3,c4,c5,c6,c7,\
@@ -246,11 +250,10 @@ double (*NL5)[Y_m][Z_m] = new double[X_np][Y_m][Z_m]
 	du2_dx,du2_dy,du2_dz,dv2_dx,dv2_dy,dv2_dz,dw2_dx,dw2_dy,dw2_dz,\
 	duv_dx,dvw_dx,duw_dx,duv_dy,dvw_dy,duw_dy,duv_dz,dvw_dz,duw_dz,\
 	dT_dx,dT_dy,dT_dz,mu_E,Pr_E,\
-	_j,_k,__j,__k,j,k\
+	_k,__k,k\
 	)
 	
-		for (i = istart; i <= iend; i++) {
-			for (__j = 0,_j = 1, j = 2; j <= nyy; __j++,_j++, j++) {
+			for (j = 2; j <= nyy; j++) {
 				for (__k = 0,_k = 1, k = 2; k <= nzz; __k++,_k++, k++) {
 
 
@@ -849,6 +852,12 @@ double (*NL5)[Y_m][Z_m] = new double[X_np][Y_m][Z_m]
 // =================== //
 	
 		for (i = istart; i <= iend; i++) {
+
+
+#pragma omp parallel for private(\
+	k\
+	)
+
 			for (j = 2; j <= ny; j++) {
 				for (k = 2, k_ = 3; k <= nz; k++, k_++) {
 

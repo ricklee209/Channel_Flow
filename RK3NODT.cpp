@@ -126,37 +126,38 @@ double (*MR5)[Y_m][Z_m] = new double[X_np][Y_m][Z_m]
 			iend = gend[myid];		    		  ////
 //// ============================================ ////
 
+
+	for (i = istart ; i <= iend; i++) {
+		
 #pragma omp parallel for private(\
 j,k,_j,_k,tmp,\
 Rf1,Rf2,Rf3,Rf4,Rf5,Rk1,Rk2,Rk3,Rk4,Rk5\
 )
-
-	for (i = istart ; i <= iend; i++) {
-		for (j = 2, _j = 1; j < nyy; j++, _j++) {
+		for (j = 2; j < nyy; j++) {
 			for (k = 2, _k = 1; k < nzz; k++, _k++) {
 
 				tmp = U2_[i][j][k]/U1_[i][j][k];
 
-				Rf1 = -((inFx1[i][_j][_k]-inFx1[i-1][_j][_k])/deltaXI+
-					(inFy1[i-1][j][_k]-inFy1[i-1][_j][_k])/deltaET+
-					(inFz1[i-1][_j][k]-inFz1[i-1][_j][_k])/deltaZT);
+				Rf1 = -((inFx1[i][j-1][_k]-inFx1[i-1][j-1][_k])/deltaXI+
+					(inFy1[i-1][j][_k]-inFy1[i-1][j-1][_k])/deltaET+
+					(inFz1[i-1][j-1][k]-inFz1[i-1][j-1][_k])/deltaZT);
 					
-				Rf2 = -((inFx2[i][_j][_k]-inFx2[i-1][_j][_k])/deltaXI+
-					(inFy2[i-1][j][_k]-inFy2[i-1][_j][_k])/deltaET+
-					(inFz2[i-1][_j][k]-inFz2[i-1][_j][_k])/deltaZT);
+				Rf2 = -((inFx2[i][j-1][_k]-inFx2[i-1][j-1][_k])/deltaXI+
+					(inFy2[i-1][j][_k]-inFy2[i-1][j-1][_k])/deltaET+
+					(inFz2[i-1][j-1][k]-inFz2[i-1][j-1][_k])/deltaZT);
 					
 					
-				Rf3 = -((inFx3[i][_j][_k]-inFx3[i-1][_j][_k])/deltaXI+
-					(inFy3[i-1][j][_k]-inFy3[i-1][_j][_k])/deltaET+
-					(inFz3[i-1][_j][k]-inFz3[i-1][_j][_k])/deltaZT);
+				Rf3 = -((inFx3[i][j-1][_k]-inFx3[i-1][j-1][_k])/deltaXI+
+					(inFy3[i-1][j][_k]-inFy3[i-1][j-1][_k])/deltaET+
+					(inFz3[i-1][j-1][k]-inFz3[i-1][j-1][_k])/deltaZT);
 					
-				Rf4 = -((inFx4[i][_j][_k]-inFx4[i-1][_j][_k])/deltaXI+
-					(inFy4[i-1][j][_k]-inFy4[i-1][_j][_k])/deltaET+
-					(inFz4[i-1][_j][k]-inFz4[i-1][_j][_k])/deltaZT);
+				Rf4 = -((inFx4[i][j-1][_k]-inFx4[i-1][j-1][_k])/deltaXI+
+					(inFy4[i-1][j][_k]-inFy4[i-1][j-1][_k])/deltaET+
+					(inFz4[i-1][j-1][k]-inFz4[i-1][j-1][_k])/deltaZT);
 					
-				Rf5 = -((inFx5[i][_j][_k]-inFx5[i-1][_j][_k])/deltaXI+
-					(inFy5[i-1][j][_k]-inFy5[i-1][_j][_k])/deltaET+
-					(inFz5[i-1][_j][k]-inFz5[i-1][_j][_k])/deltaZT);
+				Rf5 = -((inFx5[i][j-1][_k]-inFx5[i-1][j-1][_k])/deltaXI+
+					(inFy5[i-1][j][_k]-inFy5[i-1][j-1][_k])/deltaET+
+					(inFz5[i-1][j-1][k]-inFz5[i-1][j-1][_k])/deltaZT);
 
 					
 				Rk1 = Rf1;

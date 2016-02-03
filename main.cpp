@@ -443,8 +443,9 @@ int X_np = gcount[myid]+6;    /**** How many cells in X-direction for each CPU *
 		iend = gend[myid];				    	  ////
 //// ============================================ ////
 
-#pragma omp parallel for private(j,k)
 		for (i = istart; i <= iend; i++) {
+			
+#pragma omp parallel for private(k)
 			for (j = 2; j < nyy; j++) { 
 				for (k = 2; k < nzz; k++) {
 
