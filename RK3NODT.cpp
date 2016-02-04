@@ -130,7 +130,7 @@ double (*MR5)[Y_m][Z_m] = new double[X_np][Y_m][Z_m]
 	for (i = istart ; i <= iend; i++) {
 		
 #pragma omp parallel for private(\
-j,k,_j,_k,tmp,\
+k,_k,tmp,\
 Rf1,Rf2,Rf3,Rf4,Rf5,Rk1,Rk2,Rk3,Rk4,Rk5\
 )
 		for (j = 2; j < nyy; j++) {
