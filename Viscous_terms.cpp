@@ -218,7 +218,7 @@ double (*NL5)[Y_m][Z_m] = new double[X_np][Y_m][Z_m]
 		for (i = istart; i <= iend; i++) {
 
 
-			
+		
 #pragma omp parallel for private(\
 	xix,xiy,xiz,etx,ety,etz,ztx,zty,ztz,\
 	a1,a2,a3,a4,a5,a6,a7,b1,b2,b3,b4,b5,b6,b7,c1,c2,c3,c4,c5,c6,c7,\
@@ -855,7 +855,7 @@ double (*NL5)[Y_m][Z_m] = new double[X_np][Y_m][Z_m]
 
 
 #pragma omp parallel for private(\
-	k\
+	k,k_\
 	)
 
 			for (j = 2; j <= ny; j++) {
