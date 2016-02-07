@@ -351,7 +351,7 @@ double (*EpY)[Y_m][Z_m] = new double[X_np][Y_m][Z_m]
 
 					deltaU = (S-fabs(V*insqr))*temp1+temp2;
 
-					deltaP = V*insqr/S*(P_-_P)+( S*rho*(V_-_V)*insqr - fabs(V*insqr)*rho*(v_-_v) );
+					deltaP = V*insqr/S*(P_-_P)+( S - fabs(V*insqr) )*rho*(V_-_V)*insqr;
 
 				#elif ROE == 2
 
@@ -400,7 +400,7 @@ double (*EpY)[Y_m][Z_m] = new double[X_np][Y_m][Z_m]
 
 					deltaU = (S-fabs(V*insqr))*temp1+temp2;
 
-					deltaP = V*insqr/S*(P_-_P)+( S*rho*(V_-_V)*insqr - fabs(V*insqr)*rho*(v_-_v) );
+					deltaP = V*insqr/S*(P_-_P)+( S - fabs(V*insqr) )*rho*(V_-_V)*insqr;
 
 
 				#elif ROE == 3
@@ -413,7 +413,7 @@ double (*EpY)[Y_m][Z_m] = new double[X_np][Y_m][Z_m]
 					temp2 = V*insqr/S*beta*(V_-_V)*insqr;
 
 					deltaU = (S-fabs(V)*insqr)*temp1+temp2;
-					deltaP = V*insqr/S*(P_-_P)+(beta*S*rho*(V_-_V)*insqr-fabs(V*insqr)*rho*(v_-_v));
+					deltaP = V*insqr/S*(P_-_P)+( beta*S - fabs(V*insqr) )*rho*(V_-_V)*insqr;
 
 
 				#endif
