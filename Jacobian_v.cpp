@@ -62,7 +62,7 @@ double (*ztdz)[Y_m][Z_m] = new double[X_np][Y_m][Z_m]
 	double xdxi_v,xdet_v,xdzt_v,ydxi_v,ydet_v,ydzt_v,zdxi_v,zdet_v,zdzt_v;
 	
 	
-	double gamma = 2.8;
+	double gamma = 1.5;
 
 
 	

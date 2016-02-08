@@ -46,11 +46,11 @@ int main(int argc, char **argv)
 
 	int statistic_step = 5000;
 	int iteration_end_step = 200;
-	int output_step = 5000;
-	int count = 40001;
+	int output_step = 1;
+	int count = 1;
 	int step;
 	
-	double deltaT = 0.0000004;
+	double deltaT = 0.00000005;
 	double Ep = 0.1;
 	double Roe_criterion = 0.007;
 	double E_high = 1.;
@@ -137,10 +137,6 @@ int X_np = gcount[myid]+6;    /**** How many cells in X-direction for each CPU *
 		iteration_end_step = 1;
 
 	#endif
-
-
-
-
 
 
 // =============================================== //
@@ -306,6 +302,7 @@ int X_np = gcount[myid]+6;    /**** How many cells in X-direction for each CPU *
 			#endif
 
 			
+				
 
 			Viscous_terms(myid,
 						  U1_,U2_,U3_,U4_,U5_,vF2,vF3,vF4,vF5,
@@ -320,7 +317,7 @@ int X_np = gcount[myid]+6;    /**** How many cells in X-direction for each CPU *
 						  LR1,LR2,LR3,LR4,LR5,LL1,LL2,LL3,LL4,LL5,
 						  MR1,MR2,MR3,MR4,MR5,ML1,ML2,ML3,ML4,ML5,
 						  NR1,NR2,NR3,NR4,NR5,NL1,NL2,NL3,NL4,NL5);
-
+						  
 			RK3NODT(myid, RK, deltaT,
 					&er1,&er2,&er3,&er4,&er5,
 					U1_,U2_,U3_,U4_,U5_,
