@@ -314,7 +314,7 @@ double (*EpY)[Y_m][Z_m] = new double[X_np][Y_m][Z_m]
 				dU2 = rho_*u_-_rho*_u;
 				dU3 = rho_*v_-_rho*_v;
 				dU4 = rho_*w_-_rho*_w;
-				dU5 = P_/(K-1)+0.5*rho_*VV_-_P/(K-1)+0.5*_rho*_VV;
+				dU5 = (P_/(K-1)+0.5*rho_*VV_)-(_P/(K-1)+0.5*_rho*_VV);
 
 
 
