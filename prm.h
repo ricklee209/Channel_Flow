@@ -10,12 +10,12 @@
 #define R 287 
 
 
-double f = 599.29876710;  
+double f = 260.834846309745;  
 
-double Q0 = 20.464969232814912;
+double Q0 = 34.805344;
 double Qold = Q0;
 
-double high = 0.005;
+double high = 0.02;
 
 double psi = 0.001;
 

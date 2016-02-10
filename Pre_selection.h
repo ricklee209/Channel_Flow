@@ -3,7 +3,7 @@
 // ---- ROE=2 : M5LM Roe modified by B. Thornber ---- //
 // ---- ROE=3 : LM Roe modified by F. Rieper ---- //
 
-#define ROE 1
+#define ROE 2
 
 
 
