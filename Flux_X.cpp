@@ -285,15 +285,7 @@ double (*EpX)[Y_m][Z_m] = new double[X_np][Y_m][Z_m]
 				H_ = 0.5*VV_+C_/(K-1);
 				
 
-				/* jump dU */
 				
-				dU1 = rho_-_rho;
-				dU2 = rho_*u_-_rho*_u;
-				dU3 = rho_*v_-_rho*_v;
-				dU4 = rho_*w_-_rho*_w;
-				dU5 = (P_/(K-1)+0.5*rho_*VV_)-(_P/(K-1)+0.5*_rho*_VV);
-
-
 
 				#if ROE != 2
 
@@ -316,6 +308,14 @@ double (*EpX)[Y_m][Z_m] = new double[X_np][Y_m][Z_m]
 					H = (temp5*_H+temp6*H_)/temp4;
 					C = (H-0.5*VV)*(K-1); /**** C = sqrt((H-0.5*VV)*(K-1)); ****/
 					P = rho*C/K;
+
+					/* jump dU */
+				
+					dU1 = rho_-_rho;
+					dU2 = rho_*u_-_rho*_u;
+					dU3 = rho_*v_-_rho*_v;
+					dU4 = rho_*w_-_rho*_w;
+					dU5 = (P_/(K-1)+0.5*rho_*VV_)-(_P/(K-1)+0.5*_rho*_VV);
 
 				#endif
 
@@ -377,6 +377,15 @@ double (*EpX)[Y_m][Z_m] = new double[X_np][Y_m][Z_m]
 
 					deltaU = (S-fabs(U*insqr))*temp1+temp2;
 					deltaP = U*insqr/S*(P_-_P)+( S - fabs(U*insqr) )*rho*(U_-_U)*insqr;
+
+					/* jump dU */
+				
+					dU1 = rho_-_rho;
+					dU2 = rho_*u_-_rho*_u;
+					dU3 = rho_*v_-_rho*_v;
+					dU4 = rho_*w_-_rho*_w;
+					dU5 = (P_/(K-1)+0.5*rho_*VV_)-(_P/(K-1)+0.5*_rho*_VV);
+
 
 
 				#elif ROE == 3
