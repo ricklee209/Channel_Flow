@@ -52,9 +52,9 @@ int main(int argc, char **argv)
 	
 	double deltaT = 0.00000005;
 	double Ep = 0.1;
-	double Roe_criterion = 0.007;
-	double E_high = 1.;
-	double E_low = 0.;
+	double Roe_criterion = 0.005;
+	double E_high = 0.009;
+	double E_low = 0.007;
 	
 	nproc = np;
 
@@ -252,7 +252,10 @@ int X_np = gcount[myid]+6;    /**** How many cells in X-direction for each CPU *
 
 			#ifdef ILES
 
-				if ((step%10 == 0)) BCM_ADM_filter(myid, Ncube, cube_size, U1_, Roe_dis, filter);
+				//if ((step%10 == 0)) 
+					Filter(myid, Roe_criterion, E_high, E_low, U1_, U2_, U3_, U4_, U5_,
+						Y_point, EpX, EpY, EpZ, J);
+				
 				
 			#endif
 
@@ -379,7 +382,7 @@ int X_np = gcount[myid]+6;    /**** How many cells in X-direction for each CPU *
 
 	#ifdef NODT
 
-		er1 = U1_[2][2][2]/1.1842;
+		er1 = U1_[2][2][2]/J[2][2][2]/1.1842;
 
 
 	#else

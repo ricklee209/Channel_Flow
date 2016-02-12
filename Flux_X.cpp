@@ -405,11 +405,24 @@ double (*EpX)[Y_m][Z_m] = new double[X_np][Y_m][Z_m]
 
 
 				/* artificial viscosity */
-				Fav1 = fabs(U*insqr)*dU1+deltaU*rho;
-				Fav2 = fabs(U*insqr)*dU2+deltaU*rho*u+deltaP*XIx;
-				Fav3 = fabs(U*insqr)*dU3+deltaU*rho*v+deltaP*XIy;
-				Fav4 = fabs(U*insqr)*dU4+deltaU*rho*w+deltaP*XIz;
-				Fav5 = fabs(U*insqr)*dU5+deltaU*rho*H+deltaP*U;
+
+				#ifdef ILES
+
+					Fav1 = EpX[i][j][k]*fabs(U*insqr)*dU1+deltaU*rho;
+					Fav2 = EpX[i][j][k]*fabs(U*insqr)*dU2+deltaU*rho*u+deltaP*XIx;
+					Fav3 = EpX[i][j][k]*fabs(U*insqr)*dU3+deltaU*rho*v+deltaP*XIy;
+					Fav4 = EpX[i][j][k]*fabs(U*insqr)*dU4+deltaU*rho*w+deltaP*XIz;
+					Fav5 = EpX[i][j][k]*fabs(U*insqr)*dU5+deltaU*rho*H+deltaP*U;
+
+				#else
+
+					Fav1 = fabs(U*insqr)*dU1+deltaU*rho;
+					Fav2 = fabs(U*insqr)*dU2+deltaU*rho*u+deltaP*XIx;
+					Fav3 = fabs(U*insqr)*dU3+deltaU*rho*v+deltaP*XIy;
+					Fav4 = fabs(U*insqr)*dU4+deltaU*rho*w+deltaP*XIz;
+					Fav5 = fabs(U*insqr)*dU5+deltaU*rho*H+deltaP*U;
+
+				#endif
 					
 				/* inviscid fluxes */
 				
