@@ -20,7 +20,7 @@
 // ---- ILES : implicit turbulence model ---- //
 // ---- DNS : implicit turbulence model ---- //
 
-#define DNS 
+#define ILES 
 
 
 

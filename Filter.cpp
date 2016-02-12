@@ -7,6 +7,9 @@
 
 #include "Resolution.h"
 
+#define min(a,b) (((a)<(b))?(a):(b)) 
+#define max(a,b) (((a)>(b))?(a):(b)) 
+
 extern int X_np;
 
 void Filter
@@ -1575,10 +1578,9 @@ for (i = istart; i <= iend; i++) {
 				Emax = (E_h[i][j+1][k+1]+E_h[i+1][j+1][k+1])/(E_2h[i][j+1][k+1]+E_2h[i+1][j+1][k+1]);
 
 
-				if (Emax >= Roe_criterion)
-					EpX[i][j][k] = E_high;
-				else
-					EpX[i][j][k] = E_low;
+				if ( Emax > E_high ) EpX[i][j][k] = min(EpX[i][j][k]+Roe_criterion, 1.0);
+
+				if ( Emax < E_low  ) EpX[i][j][k] = max(EpX[i][j][k]-Roe_criterion, 0.0); 
 				
 
 			}
@@ -1605,12 +1607,11 @@ for (i = istart; i <= iend; i++) {
 				Emax = (E_h[i+1][j][k+1]+E_h[i+1][j+1][k+1])/(E_2h[i+1][j][k+1]+E_2h[i+1][j+1][k+1]);
 
 
-				if (Emax >= Roe_criterion)
-					EpY[i][j][k] = E_high;
-				else
-					EpY[i][j][k] = E_low;
+				
+				if ( Emax > E_high ) EpY[i][j][k] = min(EpY[i][j][k]+Roe_criterion, 1.0);
 
-				//if (myid == 0 & i==3 & k == 10) printf("%f\t%f\n",Emax,EpY[i][j][k]);
+				if ( Emax < E_low  ) EpY[i][j][k] = max(EpY[i][j][k]-Roe_criterion, 0.0); 
+				
 
 			}
 		}
@@ -1634,10 +1635,11 @@ for (i = istart; i <= iend; i++) {
 
 				Emax = (E_h[i+1][j+1][k]+E_h[i+1][j+1][k+1])/(E_2h[i+1][j+1][k]+E_2h[i+1][j+1][k+1]);
 
-				if (Emax >= Roe_criterion)
-					EpZ[i][j][k] = E_high;
-				else
-					EpZ[i][j][k] = E_low;
+				
+				if ( Emax > E_high ) EpZ[i][j][k] = min(EpZ[i][j][k]+Roe_criterion, 1.0);
+
+				if ( Emax < E_low  ) EpZ[i][j][k] = max(EpZ[i][j][k]-Roe_criterion, 0.0); 
+				
 					
 
 			}
