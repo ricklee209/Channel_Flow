@@ -38,8 +38,6 @@ double (*Z_point)[Y_m][Z_m] = new double[X_np][Y_m][Z_m]
 
 	double temp;
 
-double gamma = 2.8;
-
 // ======================= //
 	istart = 0;            //
 	iend = gend[myid]+3;   //
