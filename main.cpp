@@ -126,6 +126,28 @@ int X_np = gcount[myid]+6;    /**** How many cells in X-direction for each CPU *
 #pragma omp barrier
 		}
 
+
+		
+// =================== //
+	istart = 0;        //
+	iend = gend[myid]+3; //
+// =================== //
+	
+	for (i = istart; i <= iend; i++) {
+#pragma omp parallel for private(k)
+			for (j = 0; j <= nyyy; j++) {
+				for (k = 0; k <= nzzz; k++) {     
+
+					EpX[i][j][k] = 1.0;
+					EpY[i][j][k] = 1.0;
+					EpZ[i][j][k] = 1.0;
+					
+				}
+			}
+#pragma omp barrier
+		}
+
+
 //// ============================================ ////
 
 	
