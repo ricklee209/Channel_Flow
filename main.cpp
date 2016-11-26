@@ -44,10 +44,10 @@ int main(int argc, char **argv)
 
 
 
-	int statistic_step = 5000;
+	int statistic_step = 100000;
 	int iteration_end_step = 200;
-	int output_step = 10;
-	int count = 10;
+	int output_step = 50000;
+	int count = 1000000;
 	int step;
 	
 	double deltaT = 0.00000005;
@@ -252,7 +252,7 @@ int X_np = gcount[myid]+6;    /**** How many cells in X-direction for each CPU *
 
 			#ifdef ILES
 
-				//if ((step%10 == 0)) 
+				if ((step%10 == 0)) 
 					Filter(myid, Roe_criterion, E_high, E_low, U1_, U2_, U3_, U4_, U5_,
 						Y_point, EpX, EpY, EpZ, J);
 				
