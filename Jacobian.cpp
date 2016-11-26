@@ -46,9 +46,7 @@ double (*ztdz)[Y_m][Z_m] = new double[X_np][Y_m][Z_m]
 
 	double xdxi,xdet,xdzt,ydxi,ydet,ydzt,zdxi,zdet,zdzt;
 	
-	
-	double gamma = 1.5;
-	
+
 //// ============================================ ////
 		if (myid ==0) istart = 3;		          ////
 		else istart = 0;			              ////

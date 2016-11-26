@@ -19,4 +19,6 @@ double high = 0.005;
 
 double psi = 0.001;
 
+double gamma = 1.5;
+
 /**** computational parameters-end ****/
