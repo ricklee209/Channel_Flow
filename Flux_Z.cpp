@@ -370,6 +370,14 @@ double (*EpZ)[Y_m][Z_m] = new double[X_np][Y_m][Z_m]
 				C_ = K*P_/rho_;
 				H_ = 0.5*VV_+C_/(K-1);
 				
+                
+            
+                dU1 = rho_-_rho;
+                dU2 = rho_*u_-_rho*_u;
+                dU3 = rho_*v_-_rho*_v;
+                dU4 = rho_*w_-_rho*_w;
+                dU5 = (P_/(K-1)+0.5*rho_*VV_)-(_P/(K-1)+0.5*_rho*_VV);
+
 
 
 				#if ROE != 2
